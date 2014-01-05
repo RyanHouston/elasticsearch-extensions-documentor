@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'logger'
 
-module Elasticsearch
+module Elasticsearch::Extensions
   describe Documents do
 
     let(:logger) { Logger.new(STDOUT) }

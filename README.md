@@ -1,4 +1,4 @@
-# Elasticsearch::Documents
+# Elasticsearch::Extensions::Documents
 
 A service wrapper to manage Elasticsearch index documents
 
@@ -6,7 +6,7 @@ A service wrapper to manage Elasticsearch index documents
 
 Add this line to your application's Gemfile:
 
-    gem 'elasticsearch-documents'
+    gem 'elasticsearch-extensions-documents'
 
 And then execute:
 
@@ -14,13 +14,14 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install elasticsearch-documents
+    $ gem install elasticsearch-extensions-documents
 
 ## Usage
 
 ### Configuration
+
 ```ruby
-Elasticsearch::Documents.configure do |config|
+Elasticsearch::Extensions::Documents.configure do |config|
   config.url        = 'http://example.com:9200' # your elasticsearch endpoint
   config.index_name = 'test_index'              # the name of your index
   config.mappings   = { mappings: :here }       # a hash containing your index mappings
@@ -28,6 +29,44 @@ Elasticsearch::Documents.configure do |config|
   config.logger     = Logger.new(STDOUT)        # the logger to use. (defaults to Logger.new(STDOUT)
   config.log        = true                      # if the elasticsearch-ruby should provide logging
 end
+```
+
+### Documents
+
+The `Documents` extension provides a serialization layer aimed to ease the
+amount of work required to transform your application's data into Documents that
+can be indexed and searched in an Elasticsearch index. `Documents` uses the
+`elasticsearch-ruby` Gem for all interactions with the Elasticsearch server.
+
+#### Saving Documents
+If your application has a model called `User` that you wanted to index you would
+create a `Document` that defined how the `User` is stored in the index.
+
+```ruby
+class UserDocument < Elasticsearch::Extensions::Documents::Document
+  indexes_as_type :user
+
+  def as_hash
+    {
+      name:   object.name,
+      title:  object.title,
+      bio:    object.bio,
+    }
+  end
+
+end
+
+user = User.new  # could be a PORO or an ActiveRecord model
+user_doc = UserDocument.new(user)
+Elasticsearch::Extensions::Documents.new.index(user_doc)
+```
+
+#### Deleting Documents
+Deleting a document is just as easy
+
+```ruby
+user_doc = UserDocument.new(user)
+Elasticsearch::Extensions::Documents.new.delete(user_doc)
 ```
 
 ## Contributing

@@ -3,6 +3,8 @@ require 'spec_helper'
 module Elasticsearch
   module Extensions
     module Documents
+      Documents.configure {|config| config.index_name = 'test_index' }
+
       describe Document do
         let(:document_class) { Class.new(Elasticsearch::Extensions::Documents::Document) }
         let(:model) { double(:model) }

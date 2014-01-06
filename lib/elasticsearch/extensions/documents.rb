@@ -1,5 +1,6 @@
 require "elasticsearch"
 require "elasticsearch/extensions/documents/version"
+require "elasticsearch/extensions/documents/document"
 
 module Elasticsearch
   module Extensions

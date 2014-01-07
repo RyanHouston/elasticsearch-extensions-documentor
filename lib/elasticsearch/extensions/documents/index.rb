@@ -1,3 +1,5 @@
+require 'hashie/mash'
+
 module Elasticsearch
   module Extensions
     module Documents
@@ -29,9 +31,9 @@ module Elasticsearch
           Documents.logger.info "[documents] Attempted to delete missing document: #{not_found}"
         end
 
-        def search(query, options={})
+        def search(query)
           response = client.search(query.as_hash)
-          # Search::Results.new(response).results
+          Hashie::Mash.new(response)
         end
 
         def refresh

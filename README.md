@@ -81,7 +81,9 @@ end
 
 user = User.new  # could be a PORO or an ActiveRecord model
 user_doc = UserDocument.new(user)
-Elasticsearch::Extensions::Documents.new.index(user_doc)
+
+index = Elasticsearch::Extensions::Documents::Index.new
+index.index(user_doc)
 ```
 
 ### Deleting Documents
@@ -89,10 +91,44 @@ Deleting a document is just as easy
 
 ```ruby
 user_doc = UserDocument.new(user)
-Elasticsearch::Extensions::Documents.new.delete(user_doc)
+index.delete(user_doc)
 ```
 
 ### Searching for Documents
+Create classes which implement a `#as_hash` method to act as a catalog of your
+search queries. The `#as_hash` method can use Jbuilder or anything else to
+generate the hash. This hash should be formatted appropriately to be passed on
+to the `Elasticsearch::Transport::Client#search` method.
+
+```ruby
+class GeneralSiteSearchQuery
+  def as_hash
+    {
+      query: {
+        query_string: {
+          analyzer: "snowball",
+          query:    "something to search for",
+        }
+      }
+    }
+  end
+end
+```
+
+You could elaborate on this class with a constructor that takes the search
+term and other options specific to your use case as arguments.
+
+```ruby
+results = index.search(query)
+results.hits.total
+results.hits.max_score
+results.hits.hits.each { |hit| puts hit._source.inspect }
+```
+
+The results returned from this method wrap the raw hash from
+`Elasticsearch::Transport::Client#search` in a
+[`Hashie::Mash`](https://github.com/intridea/hashie) instance to allow object
+like access to the response hash.
 
 ## Contributing
 

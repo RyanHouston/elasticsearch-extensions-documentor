@@ -43,8 +43,32 @@ module Elasticsearch
 
         describe '#search' do
           let(:query_params) do
-            { }
+            {
+              index: 'test_index',
+              query: {
+                query_string: "search term",
+                analyzer:     "snowball",
+              }
+            }
           end
+
+          let(:response) do
+            {
+              "hits" => {
+                "total" => 4000,
+                "max_score" => 4.222,
+                "hits" => [
+                  {"_index" => "test_index",
+                    "_type"  => "user",
+                    "_id"    => 42,
+                    "_score" => 4.222,
+                    "_source" => { "name" => "Joe" }
+                  }
+                ],
+              }
+            }
+          end
+
           let(:query) { double(:query, as_hash: query_params) }
 
           it 'passes on the query request body to the client' do
@@ -52,8 +76,10 @@ module Elasticsearch
             index.search query
           end
 
-          pending 'returns a Results object' do
-            index.search(query).should be_kind_of Results
+          it 'returns a Hashie::Mash instance' do
+            expect(client).to receive(:search).with(query_params).and_return(response)
+            response = index.search(query)
+            response.should be_kind_of Hashie::Mash
           end
         end
 

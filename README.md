@@ -130,6 +130,40 @@ The results returned from this method wrap the raw hash from
 [`Hashie::Mash`](https://github.com/intridea/hashie) instance to allow object
 like access to the response hash.
 
+### Index Management
+
+The Indexer uses the `Elasticsearch::Extensions::Documentor.configuration`
+to create the index with the configured `#index_name`, `#mappings`, and
+`#settings`.
+
+```ruby
+indexer = Elasticsearch::Extensions::Documentor::Indexer.new
+indexer.create_index
+indexer.drop_index
+```
+
+The `Indexer` can `#batch_index` documents sending multiple documents to
+elasticsearch in a single request. This may be more efficient when
+programatically re-indexing entire sets of documents.
+
+```ruby
+user_documents = users.collect { |user| UserDocument.new(user) }
+indexer.batch_index(user_documents)
+```
+
+The `Indexer` accepts a block to the `#reindex` method to encapsulate the
+processes of dropping the old index, creating a new index with the latest
+configured mappings and settings, and bulk indexing a set of documents into the
+newly created index. The content of the block should be the code that creates
+your documents in batches and passes them to the `#bulk_index` method of the
+`Indexer`.
+
+```ruby
+indexer.reindex do |indexer|
+  documents = users.map { |model| UserDocument.new(model) }
+  indexer.batch_index(documents)
+end
+```
 ## Contributing
 
 1. Fork it

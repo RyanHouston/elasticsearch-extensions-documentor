@@ -1,11 +1,11 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'elasticsearch/extensions/documents/version'
+require 'elasticsearch/extensions/documentor/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "elasticsearch-extensions-documents"
-  spec.version       = Elasticsearch::Extensions::Documents::VERSION
+  spec.name          = "elasticsearch-extensions-documentor"
+  spec.version       = Elasticsearch::Extensions::Documentor::VERSION
   spec.authors       = ["Ryan Houston"]
   spec.email         = ["ryanhouston83@gmail.com"]
   spec.description   = %q{A service wrapper to manage elasticsearch index documents}

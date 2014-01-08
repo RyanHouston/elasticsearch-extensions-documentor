@@ -1,4 +1,4 @@
-# Elasticsearch::Extensions::Documents
+# Elasticsearch::Extensions::Documentor
 
 A service wrapper to manage Elasticsearch index documents
 
@@ -6,7 +6,7 @@ A service wrapper to manage Elasticsearch index documents
 
 Add this line to your application's Gemfile:
 
-    gem 'elasticsearch-extensions-documents'
+    gem 'elasticsearch-extensions-documentor'
 
 And then execute:
 
@@ -14,11 +14,11 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install elasticsearch-extensions-documents
+    $ gem install elasticsearch-extensions-documentor
 
 ## Configuration
 
-Before making any calls to Elasticsearch you need to configure the `Documents`
+Before making any calls to Elasticsearch you need to configure the `Documentor`
 extension.
 
 ```ruby
@@ -41,7 +41,7 @@ ES_SETTINGS = {
   }
 }
 
-Elasticsearch::Extensions::Documents.configure do |config|
+Elasticsearch::Extensions::Documentor.configure do |config|
   config.url        = 'http://example.com:9200' # your elasticsearch endpoint
   config.index_name = 'test_index'              # the name of your index
   config.mappings   = ES_MAPPINGS               # a hash containing your index mappings
@@ -56,17 +56,19 @@ could live in an initializer like `config/initializers/elasticsearch.rb`.
 
 ## Usage
 
-The `Documents` extension provides a serialization layer aimed to ease the
-amount of work required to transform your application's data into Documents that
-can be indexed and searched in an Elasticsearch index. `Documents` uses the
-`elasticsearch-ruby` Gem for all interactions with the Elasticsearch server.
+The `Documentor` extension builds on the
+`elasticsearch-ruby` Gem adding conventions and helper classes to aide in the
+serialization and flow of data between your application code and the
+elasticsearch-ruby interface. To accomplish this the application data models
+will be serialized into `Document`s that can be indexed and searched with the
+`elasticsearch-ruby` Gem.
 
-### Saving Documents
+### Saving a Document
 If your application has a model called `User` that you wanted to index you would
 create a `Document` that defined how the `User` is stored in the index.
 
 ```ruby
-class UserDocument < Elasticsearch::Extensions::Documents::Document
+class UserDocument < Elasticsearch::Extensions::Documentor::Document
   indexes_as_type :user
 
   def as_hash
@@ -82,11 +84,11 @@ end
 user = User.new  # could be a PORO or an ActiveRecord model
 user_doc = UserDocument.new(user)
 
-index = Elasticsearch::Extensions::Documents::Index.new
+index = Elasticsearch::Extensions::Documentor::Index.new
 index.index(user_doc)
 ```
 
-### Deleting Documents
+### Deleting a Document
 Deleting a document is just as easy
 
 ```ruby
@@ -143,8 +145,8 @@ indexer.drop_index
 ```
 
 The `Indexer` can `#batch_index` documents sending multiple documents to
-elasticsearch in a single request. This may be more efficient when
-programatically re-indexing entire sets of documents.
+Elasticsearch in a single request. This may be more efficient when
+programmatically re-indexing entire sets of documents.
 
 ```ruby
 user_documents = users.collect { |user| UserDocument.new(user) }

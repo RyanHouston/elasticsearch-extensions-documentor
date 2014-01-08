@@ -2,17 +2,17 @@ require 'hashie/mash'
 
 module Elasticsearch
   module Extensions
-    module Documents
+    module Documentor
       class Index
         attr_reader :client
 
         def initialize(client = nil)
-          @client = client || Documents.client
+          @client = client || Documentor.client
         end
 
         def index(document)
           payload = {
-            index:  Documents.index_name,
+            index:  Documentor.index_name,
             type:   document.class.type,
             id:     document.id,
             body:   document.as_hash,
@@ -22,13 +22,13 @@ module Elasticsearch
 
         def delete(document)
           payload = {
-            index:  Documents.index_name,
+            index:  Documentor.index_name,
             type:   document.class.type,
             id:     document.id,
           }
           client.delete payload
         rescue Elasticsearch::Transport::Transport::Errors::NotFound => not_found
-          Documents.logger.info "[documents] Attempted to delete missing document: #{not_found}"
+          Documentor.logger.info "[Documentor] Attempted to delete missing document: #{not_found}"
         end
 
         def search(query)
@@ -37,7 +37,7 @@ module Elasticsearch
         end
 
         def refresh
-          client.indices.refresh index: Documents.index_name
+          client.indices.refresh index: Documentor.index_name
         end
 
       end

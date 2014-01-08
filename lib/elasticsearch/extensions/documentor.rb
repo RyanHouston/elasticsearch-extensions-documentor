@@ -1,12 +1,12 @@
 require "elasticsearch"
 require "logger"
-require "elasticsearch/extensions/documents/version"
-require "elasticsearch/extensions/documents/document"
-require "elasticsearch/extensions/documents/index"
+require "elasticsearch/extensions/documentor/version"
+require "elasticsearch/extensions/documentor/document"
+require "elasticsearch/extensions/documentor/index"
 
 module Elasticsearch
   module Extensions
-    module Documents
+    module Documentor
 
       class << self
         attr_accessor :client, :configuration

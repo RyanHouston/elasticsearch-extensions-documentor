@@ -6,15 +6,16 @@ require 'elasticsearch/extensions/documentor/version'
 Gem::Specification.new do |spec|
   spec.name          = "elasticsearch-extensions-documentor"
   spec.version       = Elasticsearch::Extensions::Documentor::VERSION
+  spec.required_ruby_version = ">= 1.9.3"
+
   spec.authors       = ["Ryan Houston"]
   spec.email         = ["ryanhouston83@gmail.com"]
-  spec.description   = %q{A service wrapper to manage elasticsearch index documents}
-  spec.summary       = %q{Define mappings to turn model instances into indexable search documents}
-  spec.homepage      = ""
+  spec.summary       = %q{A service wrapper to manage elasticsearch index documents}
+  spec.description   = %q{Define mappings to turn model instances into indexable search documents}
+  spec.homepage      = "http://github.com/RyanHouston/elasticsearch-extensions-documentor"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files`.split($/)
-  spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
 

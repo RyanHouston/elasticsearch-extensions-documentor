@@ -162,6 +162,14 @@ your documents in batches and passes them to the `#bulk_index` method of the
 
 ```ruby
 indexer.reindex do |indexer|
+
+  # For ActiveRecord you may want to find_in_batches
+  User.find_in_batches(batch_size: 500) do |batch|
+    documents = batch.map { |user| UserDocument.new(user) }
+    indexer.batch_index(documents)
+  end
+
+  # Otherwise you can add whatever logic you need to bulk index your documents
   documents = users.map { |model| UserDocument.new(model) }
   indexer.batch_index(documents)
 end

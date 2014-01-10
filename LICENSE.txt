@@ -1,4 +1,4 @@
-Copyright (c) 2014 Ryan Houston
+Copyright (c) 2014 Ryan Houston and Project 10 LLC (culturalist.com)
 
 MIT License
 

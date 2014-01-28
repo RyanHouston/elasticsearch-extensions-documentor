@@ -4,6 +4,7 @@ require "elasticsearch/extensions/documentor/version"
 require "elasticsearch/extensions/documentor/document"
 require "elasticsearch/extensions/documentor/index"
 require "elasticsearch/extensions/documentor/indexer"
+require "elasticsearch/extensions/documentor/query_base"
 
 module Elasticsearch
   module Extensions

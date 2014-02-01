@@ -1,7 +1,7 @@
 module Elasticsearch
   module Extensions
     module Documentor
-      class QueryBase
+      module Queryable
 
         def as_hash
           raise NotImplementedError, "#{self.class.name} should implement #as_hash method"

@@ -20,8 +20,8 @@ class TestDocumentorDocument < Elasticsearch::Extensions::Documentor::Document
 
   def as_hash
     {
-      a: model.a,
-      b: model.b,
+      a: object.a,
+      b: object.b,
     }
   end
 end

@@ -97,19 +97,25 @@ index.delete(user_doc)
 ```
 
 ### Searching for Documents
-Create classes which implement a `#as_hash` method to act as a catalog of your
-search queries. The `#as_hash` method can use Jbuilder or anything else to
-generate the hash. This hash should be formatted appropriately to be passed on
-to the `Elasticsearch::Transport::Client#search` method.
+Create classes which include `Elasticsearch::Extensions::Documentor::Queryable`.
+Then implement a `#as_hash` method to define the JSON structure of an
+Elasticsearch Query using the [Query DSL][es-query-dsl]. This hash should be
+formatted appropriately to be passed on to the
+[Elasticsearch::Transport::Client#search][es-ruby-search-src] method.
 
 ```ruby
 class GeneralSiteSearchQuery
+  include Elasticsearch::Extensions::Documentor::Queryable
+
   def as_hash
     {
-      query: {
-        query_string: {
-          analyzer: "snowball",
-          query:    "something to search for",
+      index: 'test_index',
+      body: {
+        query: {
+          query_string: {
+            analyzer: "snowball",
+            query:    "something to search for",
+          }
         }
       }
     }
@@ -120,17 +126,40 @@ end
 You could elaborate on this class with a constructor that takes the search
 term and other options specific to your use case as arguments.
 
+You can then call the `#execute` method to run the query. The Elasticsearch JSON
+response will be returned in whole wrapped in a
+[`Hashie::Mash`](https://github.com/intridea/hashie) instance to allow
+the results to be interacted with in object notation instead of hash notation.
+
 ```ruby
-results = index.search(query)
+query = GeneralSiteSearchQuery.new
+results = query.execute
 results.hits.total
 results.hits.max_score
-results.hits.hits.each { |hit| puts hit._source.inspect }
+results.hits.hits.each { |hit| puts hit._source }
 ```
 
-The results returned from this method wrap the raw hash from
-`Elasticsearch::Transport::Client#search` in a
-[`Hashie::Mash`](https://github.com/intridea/hashie) instance to allow object
-like access to the response hash.
+You can also easily define a custom result format by overriding the
+`#parse_results` method in your Queryable class.
+
+```ruby
+class GeneralSiteSearchQuery
+  include Elasticsearch::Extensions::Documentor::Queryable
+
+  def as_hash
+    # your query structure here
+  end
+
+  def parse_results(raw_results)
+    CustomQueryResults.new(raw_results)
+  end
+end
+```
+
+Here the `CustomQueryResults` gets passed the `Hashie::Mash` results object and
+can parse and coerce that data into whatever structure is most useful for your
+application.
+
 
 ### Index Management
 
@@ -144,13 +173,13 @@ indexer.create_index
 indexer.drop_index
 ```
 
-The `Indexer` can `#batch_index` documents sending multiple documents to
+The `Indexer` can `#bulk_index` documents sending multiple documents to
 Elasticsearch in a single request. This may be more efficient when
 programmatically re-indexing entire sets of documents.
 
 ```ruby
 user_documents = users.collect { |user| UserDocument.new(user) }
-indexer.batch_index(user_documents)
+indexer.bulk_index(user_documents)
 ```
 
 The `Indexer` accepts a block to the `#reindex` method to encapsulate the
@@ -166,12 +195,12 @@ indexer.reindex do |indexer|
   # For ActiveRecord you may want to find_in_batches
   User.find_in_batches(batch_size: 500) do |batch|
     documents = batch.map { |user| UserDocument.new(user) }
-    indexer.batch_index(documents)
+    indexer.bulk_index(documents)
   end
 
   # Otherwise you can add whatever logic you need to bulk index your documents
   documents = users.map { |model| UserDocument.new(model) }
-  indexer.batch_index(documents)
+  indexer.bulk_index(documents)
 end
 ```
 ## Contributing
@@ -181,4 +210,8 @@ end
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request
+
+
+[es-query-dsl]: http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl.html
+[es-ruby-search-src]: https://github.com/elasticsearch/elasticsearch-ruby/blob/master/elasticsearch-api/lib/elasticsearch/api/actions/search.rb
 

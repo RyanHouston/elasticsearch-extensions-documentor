@@ -2,10 +2,10 @@ module Elasticsearch
   module Extensions
     module Documentor
       class Document
-        attr_reader :model
+        attr_reader :object
 
-        def initialize(model)
-          @model = model
+        def initialize(object)
+          @object = object
         end
 
         class << self
@@ -18,7 +18,7 @@ module Elasticsearch
         end
 
         def id
-          model.id
+          object.id
         end
 
         def as_hash

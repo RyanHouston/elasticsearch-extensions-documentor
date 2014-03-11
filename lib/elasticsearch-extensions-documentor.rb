@@ -1,2 +1,2 @@
-require "elasticsearch/extensions/documentor"
+require "elasticsearch/extensions/documents"
 

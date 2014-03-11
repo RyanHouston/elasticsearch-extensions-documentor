@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'elasticsearch/extensions/documentor/queryable'
+require 'elasticsearch/extensions/documents/queryable'
 
 module Elasticsearch
   module Extensions

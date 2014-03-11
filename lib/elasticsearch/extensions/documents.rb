@@ -1,11 +1,11 @@
 require "elasticsearch"
 require "logger"
-require "elasticsearch/extensions/documentor/version"
-require "elasticsearch/extensions/documentor/document"
-require "elasticsearch/extensions/documentor/index"
-require "elasticsearch/extensions/documentor/indexer"
-require "elasticsearch/extensions/documentor/queryable"
-require "elasticsearch/extensions/documentor/utils"
+require "elasticsearch/extensions/documents/version"
+require "elasticsearch/extensions/documents/document"
+require "elasticsearch/extensions/documents/index"
+require "elasticsearch/extensions/documents/indexer"
+require "elasticsearch/extensions/documents/queryable"
+require "elasticsearch/extensions/documents/utils"
 
 module Elasticsearch
   module Extensions

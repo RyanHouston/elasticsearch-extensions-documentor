@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'elasticsearch/extensions/documentor/utils'
+require 'elasticsearch/extensions/documents/utils'
 
 module Elasticsearch
   module Extensions

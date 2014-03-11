@@ -8,15 +8,15 @@ RSpec.configure do |config|
   config.order = 'random'
 end
 
-Elasticsearch::Extensions::Documentor.configure do |config|
+Elasticsearch::Extensions::Documents.configure do |config|
   config.url        = 'http://example.com:9200'
   config.index_name = 'test_index'
   config.settings   = :fake_settings
   config.mappings   = :fake_mappings
 end
 
-class TestDocumentorDocument < Elasticsearch::Extensions::Documentor::Document
-  indexes_as_type :documentor_test
+class TestDocumentsDocument < Elasticsearch::Extensions::Documents::Document
+  indexes_as_type :documents_test
 
   def as_hash
     {

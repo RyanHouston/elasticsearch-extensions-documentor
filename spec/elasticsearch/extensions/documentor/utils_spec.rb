@@ -3,7 +3,7 @@ require 'elasticsearch/extensions/documentor/utils'
 
 module Elasticsearch
   module Extensions
-    module Documentor
+    module Documents
       describe Utils do
 
         describe '.sanitize_for_query_string_query' do

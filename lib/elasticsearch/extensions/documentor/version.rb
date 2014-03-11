@@ -1,6 +1,6 @@
 module Elasticsearch
   module Extensions
-    module Documentor
+    module Documents
       VERSION = "0.0.1.alpha"
     end
   end

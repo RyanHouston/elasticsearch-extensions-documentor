@@ -1,4 +1,4 @@
-# Elasticsearch::Extensions::Documentor
+# Elasticsearch::Extensions::Documents
 
 A service wrapper to manage Elasticsearch index documents
 
@@ -18,7 +18,7 @@ Or install it yourself as:
 
 ## Configuration
 
-Before making any calls to Elasticsearch you need to configure the `Documentor`
+Before making any calls to Elasticsearch you need to configure the `Documents`
 extension.
 
 ```ruby
@@ -41,7 +41,7 @@ ES_SETTINGS = {
   }
 }
 
-Elasticsearch::Extensions::Documentor.configure do |config|
+Elasticsearch::Extensions::Documents.configure do |config|
   config.url        = 'http://example.com:9200' # your elasticsearch endpoint
   config.index_name = 'test_index'              # the name of your index
   config.mappings   = ES_MAPPINGS               # a hash containing your index mappings
@@ -56,7 +56,7 @@ could live in an initializer like `config/initializers/elasticsearch.rb`.
 
 ## Usage
 
-The `Documentor` extension builds on the
+The `Documents` extension builds on the
 `elasticsearch-ruby` Gem adding conventions and helper classes to aide in the
 serialization and flow of data between your application code and the
 elasticsearch-ruby interface. To accomplish this the application data models
@@ -68,7 +68,7 @@ If your application has a model called `User` that you wanted to index you would
 create a `Document` that defined how the `User` is stored in the index.
 
 ```ruby
-class UserDocument < Elasticsearch::Extensions::Documentor::Document
+class UserDocument < Elasticsearch::Extensions::Documents::Document
   indexes_as_type :user
 
   def as_hash
@@ -84,7 +84,7 @@ end
 user = User.new  # could be a PORO or an ActiveRecord model
 user_doc = UserDocument.new(user)
 
-index = Elasticsearch::Extensions::Documentor::Index.new
+index = Elasticsearch::Extensions::Documents::Index.new
 index.index(user_doc)
 ```
 
@@ -97,7 +97,7 @@ index.delete(user_doc)
 ```
 
 ### Searching for Documents
-Create classes which include `Elasticsearch::Extensions::Documentor::Queryable`.
+Create classes which include `Elasticsearch::Extensions::Documents::Queryable`.
 Then implement a `#as_hash` method to define the JSON structure of an
 Elasticsearch Query using the [Query DSL][es-query-dsl]. This hash should be
 formatted appropriately to be passed on to the
@@ -105,7 +105,7 @@ formatted appropriately to be passed on to the
 
 ```ruby
 class GeneralSiteSearchQuery
-  include Elasticsearch::Extensions::Documentor::Queryable
+  include Elasticsearch::Extensions::Documents::Queryable
 
   def as_hash
     {
@@ -144,7 +144,7 @@ You can also easily define a custom result format by overriding the
 
 ```ruby
 class GeneralSiteSearchQuery
-  include Elasticsearch::Extensions::Documentor::Queryable
+  include Elasticsearch::Extensions::Documents::Queryable
 
   def as_hash
     # your query structure here
@@ -163,12 +163,12 @@ application.
 
 ### Index Management
 
-The Indexer uses the `Elasticsearch::Extensions::Documentor.configuration`
+The Indexer uses the `Elasticsearch::Extensions::Documents.configuration`
 to create the index with the configured `#index_name`, `#mappings`, and
 `#settings`.
 
 ```ruby
-indexer = Elasticsearch::Extensions::Documentor::Indexer.new
+indexer = Elasticsearch::Extensions::Documents::Indexer.new
 indexer.create_index
 indexer.drop_index
 ```

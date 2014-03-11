@@ -2,7 +2,7 @@ require 'spec_helper'
 
 module Elasticsearch
   module Extensions
-    module Documentor
+    module Documents
       class TestDocument < Document
         indexes_as_type :test_doc
         def as_hash

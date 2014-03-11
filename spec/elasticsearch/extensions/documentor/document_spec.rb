@@ -2,11 +2,11 @@ require 'spec_helper'
 
 module Elasticsearch
   module Extensions
-    module Documentor
-      Documentor.configure {|config| config.index_name = 'test_index' }
+    module Documents
+      Documents.configure {|config| config.index_name = 'test_index' }
 
       describe Document do
-        let(:document_class) { Class.new(Elasticsearch::Extensions::Documentor::Document) }
+        let(:document_class) { Class.new(Elasticsearch::Extensions::Documents::Document) }
         let(:model) { double(:model) }
         subject(:document) { document_class.new(model) }
 

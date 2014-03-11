@@ -5,7 +5,7 @@ require 'elasticsearch/extensions/documentor/version'
 
 Gem::Specification.new do |spec|
   spec.name          = "elasticsearch-extensions-documentor"
-  spec.version       = Elasticsearch::Extensions::Documentor::VERSION
+  spec.version       = Elasticsearch::Extensions::Documents::VERSION
   spec.required_ruby_version = ">= 1.9.3"
 
   spec.authors       = ["Ryan Houston"]

@@ -3,7 +3,7 @@ require 'elasticsearch/extensions/documentor/queryable'
 
 module Elasticsearch
   module Extensions
-    module Documentor
+    module Documents
       describe Queryable do
 
         context 'when a subclass is not correctly implemented' do

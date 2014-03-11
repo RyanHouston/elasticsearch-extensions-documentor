@@ -1,6 +1,6 @@
 module Elasticsearch
   module Extensions
-    module Documentor
+    module Documents
       module Queryable
 
         def as_hash
@@ -17,11 +17,11 @@ module Elasticsearch
         end
 
         def index_name
-          Elasticsearch::Extensions::Documentor.index_name
+          Elasticsearch::Extensions::Documents.index_name
         end
 
         def index
-          @index ||= Elasticsearch::Extensions::Documentor::Index.new
+          @index ||= Elasticsearch::Extensions::Documents::Index.new
         end
 
       end

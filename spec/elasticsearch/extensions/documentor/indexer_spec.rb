@@ -2,7 +2,7 @@ require 'spec_helper'
 
 module Elasticsearch
   module Extensions
-    module Documentor
+    module Documents
       describe Indexer do
 
         let(:indices) { double(:indices) }
@@ -53,7 +53,7 @@ module Elasticsearch
 
         describe '#bulk_index' do
           let(:models) { [double(:model, id: 1, a: 1, b: 2), double(:model, id: 2, a: 3, b: 4)] }
-          let(:documents) { models.map { |m| TestDocumentorDocument.new(m) } }
+          let(:documents) { models.map { |m| TestDocumentsDocument.new(m) } }
 
           it 'passes operations to the client bulk action' do
             expected_body = {
@@ -61,7 +61,7 @@ module Elasticsearch
                 {
                   index: {
                     _index: 'test_index',
-                    _type:  'documentor_test',
+                    _type:  'documents_test',
                     _id:    1,
                     data:   { a: 1, b: 2 },
                   }
@@ -69,7 +69,7 @@ module Elasticsearch
                 {
                   index: {
                     _index: 'test_index',
-                    _type:  'documentor_test',
+                    _type:  'documents_test',
                     _id:    2,
                     data:   { a: 3, b: 4 },
                   },

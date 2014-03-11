@@ -1,12 +1,12 @@
 module Elasticsearch
   module Extensions
-    module Documentor
+    module Documents
       class Indexer
         attr_reader :client, :config
 
         def initialize(options = {})
-          @client = options.fetch(:client) { Documentor.client }
-          @config = options.fetch(:config) { Documentor.configuration }
+          @client = options.fetch(:client) { Documents.client }
+          @config = options.fetch(:config) { Documents.configuration }
         end
 
         def drop_index

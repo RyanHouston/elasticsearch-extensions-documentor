@@ -1,6 +1,6 @@
 module Elasticsearch
   module Extensions
-    module Documentor
+    module Documents
       class Document
         attr_reader :object
 

@@ -1,6 +1,6 @@
 module Elasticsearch
   module Extensions
-    module Documentor
+    module Documents
       module Utils
 
         def self.sanitize_for_query_string_query(query_string)

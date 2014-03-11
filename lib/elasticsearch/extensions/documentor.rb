@@ -9,7 +9,7 @@ require "elasticsearch/extensions/documentor/utils"
 
 module Elasticsearch
   module Extensions
-    module Documentor
+    module Documents
 
       class << self
         attr_accessor :client, :configuration

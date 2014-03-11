@@ -4,7 +4,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'elasticsearch/extensions/documents/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "elasticsearch-extensions-documentor"
+  spec.name          = "elasticsearch-documents"
   spec.version       = Elasticsearch::Extensions::Documents::VERSION
   spec.required_ruby_version = ">= 1.9.3"
 
@@ -12,7 +12,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["ryanhouston83@gmail.com"]
   spec.summary       = %q{A service wrapper to manage elasticsearch index documents}
   spec.description   = %q{Define mappings to turn model instances into indexable search documents}
-  spec.homepage      = "http://github.com/RyanHouston/elasticsearch-extensions-documentor"
+  spec.homepage      = "http://github.com/RyanHouston/elasticsearch-documents"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files`.split($/)

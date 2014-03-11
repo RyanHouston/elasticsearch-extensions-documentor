@@ -6,7 +6,7 @@ A service wrapper to manage Elasticsearch index documents
 
 Add this line to your application's Gemfile:
 
-    gem 'elasticsearch-extensions-documentor'
+    gem 'elasticsearch-documents'
 
 And then execute:
 
@@ -14,7 +14,7 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install elasticsearch-extensions-documentor
+    $ gem install elasticsearch-documents
 
 ## Configuration
 

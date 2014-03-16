@@ -2,6 +2,8 @@
 
 A service wrapper to manage Elasticsearch index documents
 
+[![Build Status](https://travis-ci.org/ryanhouston/elasticsearch-documents.png?branch=master)](https://travis-ci.org/ryanhouston/elasticsearch-documents)
+
 ## Installation
 
 Add this line to your application's Gemfile:

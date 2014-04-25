@@ -30,10 +30,10 @@ module Elasticsearch::Extensions
         expect(client).to be_instance_of Elasticsearch::Transport::Client
       end
 
-      it 'caches the client instance' do
+      it 'provides a new client instance' do
         c1 = Documents.client
         c2 = Documents.client
-        expect(c1).to equal c2
+        expect(c1).not_to equal c2
       end
     end
 

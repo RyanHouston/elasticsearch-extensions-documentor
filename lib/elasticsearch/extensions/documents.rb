@@ -15,7 +15,7 @@ module Elasticsearch
         attr_accessor :client, :configuration
 
         def client
-          @client ||= Elasticsearch::Client.new({
+          Elasticsearch::Client.new({
             host: self.configuration.url,
             log:  self.configuration.log,
           })

@@ -1,5 +1,6 @@
 require "elasticsearch"
 require "logger"
+require "ostruct"
 require "elasticsearch/extensions/documents/version"
 require "elasticsearch/extensions/documents/document"
 require "elasticsearch/extensions/documents/index"
@@ -15,14 +16,11 @@ module Elasticsearch
         attr_accessor :client, :configuration
 
         def client
-          Elasticsearch::Client.new({
-            host: self.configuration.url,
-            log:  self.configuration.log,
-          })
+          Elasticsearch::Client.new(configuration.to_h)
         end
 
         def configure
-          self.configuration ||= Configuration.new
+          self.configuration ||= OpenStruct.new
           yield configuration
         end
 
@@ -31,16 +29,7 @@ module Elasticsearch
         end
 
         def logger
-          self.configuration.logger
-        end
-      end
-
-      class Configuration
-        attr_accessor :url, :index_name, :mappings, :settings, :log, :logger
-
-        def initialize
-          @logger = Logger.new(STDOUT)
-          @log    = true
+          self.configuration.logger ||= Logger.new(STDERR)
         end
       end
 

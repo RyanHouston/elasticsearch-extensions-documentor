@@ -4,14 +4,6 @@ require 'logger'
 module Elasticsearch::Extensions
   describe Documents do
 
-    let(:logger) { Logger.new(STDOUT) }
-    before do
-      Documents.configure do |config|
-        config.logger     = logger
-        config.log        = true
-      end
-    end
-
     describe '.configuration' do
       subject(:config) { Documents.configuration }
 
@@ -19,8 +11,6 @@ module Elasticsearch::Extensions
       specify { expect(config.index_name).to eql 'test_index' }
       specify { expect(config.mappings).to eql( :fake_mappings ) }
       specify { expect(config.settings).to eql( :fake_settings ) }
-      specify { expect(config.logger).to equal logger }
-      specify { expect(config.logger).to be_true }
     end
 
     describe '.client' do
@@ -30,7 +20,7 @@ module Elasticsearch::Extensions
         expect(client).to be_instance_of Elasticsearch::Transport::Client
       end
 
-      it 'provides a new client instance' do
+      it 'provides a new client instance for each call' do
         c1 = Documents.client
         c2 = Documents.client
         expect(c1).not_to equal c2
@@ -42,7 +32,9 @@ module Elasticsearch::Extensions
     end
 
     describe '.logger' do
-      specify { expect(Documents.logger).to equal logger }
+      it 'provides a default logger if none is given' do
+        expect(Documents.logger).to be_kind_of Logger
+      end
     end
 
   end

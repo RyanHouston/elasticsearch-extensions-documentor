@@ -21,7 +21,8 @@ Or install it yourself as:
 ## Configuration
 
 Before making any calls to Elasticsearch you need to configure the `Documents`
-extension.
+extension. Configuration options are also passed through to
+[`Elasticsearch::Client`](https://github.com/elasticsearch/elasticsearch-ruby/blob/a7bbdbf2a96168c1b33dca46ee160d2d4d75ada0/elasticsearch-transport/lib/elasticsearch/transport/client.rb).
 
 ```ruby
 ES_MAPPINGS = {

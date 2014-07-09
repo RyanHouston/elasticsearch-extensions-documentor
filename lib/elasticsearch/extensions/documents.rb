@@ -16,7 +16,7 @@ module Elasticsearch
         attr_accessor :client, :configuration
 
         def client
-          Elasticsearch::Client.new(configuration.to_h)
+          Elasticsearch::Client.new(configuration.marshal_dump)
         end
 
         def configure

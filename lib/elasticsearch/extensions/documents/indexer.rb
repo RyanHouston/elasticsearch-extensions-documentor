@@ -28,9 +28,12 @@ module Elasticsearch
           end
         end
 
-        def reindex(&block)
-          drop_index
+        def reindex(options = {}, &block)
+          force_create = options.fetch(:force_create) { false }
+
+          drop_index if force_create
           create_index
+
           block.call(self) if block_given?
         end
 

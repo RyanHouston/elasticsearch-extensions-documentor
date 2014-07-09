@@ -83,10 +83,20 @@ module Elasticsearch
 
         describe '#reindex' do
 
-          it 'drops the index if exists' do
-            indices.stub(:exists).and_return(true)
-            expect(indexer).to receive(:drop_index)
-            indexer.reindex
+          context 'with the :force_create option' do
+            it 'drops the index if exists' do
+              indices.stub(:exists).and_return(true)
+              expect(indexer).to receive(:drop_index)
+              indexer.reindex(force_create: true)
+            end
+          end
+
+          context 'without the :force_create option' do
+            it 'does not drop the index if exists' do
+              indices.stub(:exists).and_return(true)
+              expect(indexer).not_to receive(:drop_index)
+              indexer.reindex
+            end
           end
 
           it 'creates a new index' do

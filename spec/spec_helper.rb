@@ -9,10 +9,10 @@ RSpec.configure do |config|
 end
 
 Elasticsearch::Extensions::Documents.configure do |config|
-  config.url        = 'http://example.com:9200'
   config.index_name = 'test_index'
   config.settings   = :fake_settings
   config.mappings   = :fake_mappings
+  config.client.url = 'http://example.com:9200'
 end
 
 class TestDocumentsDocument < Elasticsearch::Extensions::Documents::Document

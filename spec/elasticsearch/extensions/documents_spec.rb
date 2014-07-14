@@ -7,10 +7,9 @@ module Elasticsearch::Extensions
     describe '.configuration' do
       subject(:config) { Documents.configuration }
 
-      specify { expect(config.url).to eql 'http://example.com:9200' }
-      specify { expect(config.index_name).to eql 'test_index' }
-      specify { expect(config.mappings).to eql( :fake_mappings ) }
-      specify { expect(config.settings).to eql( :fake_settings ) }
+      its(:index_name) { should eql 'test_index' }
+      its(:mappings) { should eql :fake_mappings  }
+      its(:settings) { should eql :fake_settings  }
     end
 
     describe '.client' do
@@ -24,6 +23,21 @@ module Elasticsearch::Extensions
         c1 = Documents.client
         c2 = Documents.client
         expect(c1).not_to equal c2
+      end
+
+      it 'instantiates the client with the config.client settings' do
+        Documents.configure do |config|
+          config.client.url = 'http://example.com:9200/es'
+          config.client.logger = :app_logger
+          config.client.tracer = :app_tracer
+        end
+
+        expect(Elasticsearch::Client).to receive(:new) do |options|
+          expect(options[:url]).to eq 'http://example.com:9200/es'
+          expect(options[:logger]).to eq :app_logger
+          expect(options[:tracer]).to eq :app_tracer
+        end
+        Documents.client
       end
     end
 

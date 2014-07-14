@@ -21,7 +21,7 @@ Or install it yourself as:
 ## Configuration
 
 Before making any calls to Elasticsearch you need to configure the `Documents`
-extension. Configuration options are also passed through to
+extension. Configuration options namespaced under 'client' are passed through to
 [`Elasticsearch::Client`](https://github.com/elasticsearch/elasticsearch-ruby/blob/a7bbdbf2a96168c1b33dca46ee160d2d4d75ada0/elasticsearch-transport/lib/elasticsearch/transport/client.rb).
 
 ```ruby
@@ -45,12 +45,11 @@ ES_SETTINGS = {
 }
 
 Elasticsearch::Extensions::Documents.configure do |config|
-  config.url        = 'http://example.com:9200' # your elasticsearch endpoint
   config.index_name = 'test_index'              # the name of your index
   config.mappings   = ES_MAPPINGS               # a hash containing your index mappings
   config.settings   = ES_SETTINGS               # a hash containing your index settings
-  config.logger     = Logger.new(STDOUT)        # the logger to use. (defaults to Logger.new(STDOUT)
-  config.log        = true                      # if the elasticsearch-ruby should provide logging
+  config.client.url = 'http://example.com:9200' # your elasticsearch endpoint
+  config.client.logger = Rails.logger           # the logger to use. (defaults to Logger.new(STDERR))
 end
 ```
 

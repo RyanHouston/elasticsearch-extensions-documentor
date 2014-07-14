@@ -16,11 +16,11 @@ module Elasticsearch
         attr_accessor :client, :configuration
 
         def client
-          Elasticsearch::Client.new(configuration.marshal_dump)
+          Elasticsearch::Client.new(configuration.client.marshal_dump)
         end
 
         def configure
-          self.configuration ||= OpenStruct.new
+          self.configuration ||= OpenStruct.new(client: OpenStruct.new)
           yield configuration
         end
 
@@ -29,7 +29,7 @@ module Elasticsearch
         end
 
         def logger
-          self.configuration.logger ||= Logger.new(STDERR)
+          self.configuration.client.logger ||= Logger.new(STDERR)
         end
       end
 

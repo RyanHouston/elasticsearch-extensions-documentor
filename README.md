@@ -1,6 +1,7 @@
 # Elasticsearch::Extensions::Documents
 
-A service wrapper to manage Elasticsearch index documents
+A service wrapper to manage Elasticsearch index documents. Built on the
+[`elasticsearch-ruby`][es-ruby-gem] Gem.
 
 [![Build Status](https://travis-ci.org/ryanhouston/elasticsearch-documents.png?branch=master)](https://travis-ci.org/ryanhouston/elasticsearch-documents)
 
@@ -58,16 +59,16 @@ could live in an initializer like `config/initializers/elasticsearch.rb`.
 
 ## Usage
 
-The `Documents` extension builds on the
-`elasticsearch-ruby` Gem adding conventions and helper classes to aide in the
-serialization and flow of data between your application code and the
-elasticsearch-ruby interface. To accomplish this the application data models
-will be serialized into `Document`s that can be indexed and searched with the
-`elasticsearch-ruby` Gem.
+The `Documents` extension builds on the [`elasticsearch-ruby`][es-ruby-gem] Gem
+adding conventions and helper classes to aide in the serialization and flow of
+data between your application code and the elasticsearch-ruby client. To
+accomplish this the application data models will be serialized into instances
+of `Document` classes.  These `Document` instances are then indexed and searched
+with wrappers around the `elasticsearch-ruby` client.
 
 ### Saving a Document
-If your application has a model called `User` that you wanted to index you would
-create a `Document` that defined how the `User` is stored in the index.
+Assume your application has a `User` model. To index the `User` records you
+define a `Document` that maps `User` records to a search index mapping.
 
 ```ruby
 class UserDocument < Elasticsearch::Extensions::Documents::Document
@@ -126,7 +127,8 @@ end
 ```
 
 You could elaborate on this class with a constructor that takes the search
-term and other options specific to your use case as arguments.
+term and other options specific to your use case as arguments. The impoortant
+part is to define the `#as_hash` method.
 
 You can then call the `#execute` method to run the query. The Elasticsearch JSON
 response will be returned in whole wrapped in a
@@ -205,6 +207,23 @@ indexer.reindex do |indexer|
   indexer.bulk_index(documents)
 end
 ```
+
+By default the call to `#reindex` will create the index if it does not yet
+exist. If the index already exists it will be left in place and the documents
+provided to be indexed will be added or updated as needed. You can force the
+index to be dropped and recreated during the reindex process by passing the
+`force_create: true` option:
+
+```ruby
+indexer.reindex(force_create: true) do |indexer|
+  # bulk index those documents into a fresh index
+end
+```
+
+Different reindexing strategies may be added in the future to allow "zero
+downtime reindexing". This could be accomplished using index names with a
+timestamp appended and index aliases.
+
 ## Contributing
 
 1. Fork it
@@ -215,5 +234,6 @@ end
 
 
 [es-query-dsl]: http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl.html
+[es-ruby-gem]: https://github.com/elasticsearch/elasticsearch-ruby
 [es-ruby-search-src]: https://github.com/elasticsearch/elasticsearch-ruby/blob/master/elasticsearch-api/lib/elasticsearch/api/actions/search.rb
 

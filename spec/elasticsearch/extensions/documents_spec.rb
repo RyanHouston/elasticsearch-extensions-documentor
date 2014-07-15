@@ -4,6 +4,8 @@ require 'logger'
 module Elasticsearch::Extensions
   describe Documents do
 
+    before(:each) { reset_configuration }
+
     describe '.configuration' do
       subject(:config) { Documents.configuration }
 

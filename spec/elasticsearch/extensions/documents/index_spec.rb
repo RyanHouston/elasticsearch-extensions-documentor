@@ -44,7 +44,6 @@ module Elasticsearch
         describe '#search' do
           let(:query_params) do
             {
-              index: 'test_index',
               query: {
                 query_string: "search term",
                 analyzer:     "snowball",
@@ -71,13 +70,20 @@ module Elasticsearch
 
           let(:query) { double(:query, as_hash: query_params) }
 
+          it 'assigns a default value to the "index" field' do
+            expected_params = query_params.merge(index: 'test_index')
+            expect(client).to receive(:search).with(expected_params)
+            index.search query
+          end
+
           it 'passes on the query request body to the client' do
-            expect(client).to receive(:search).with(query_params)
+            expected_params = query_params.merge(index: 'test_index')
+            expect(client).to receive(:search).with(expected_params)
             index.search query
           end
 
           it 'returns a Hashie::Mash instance' do
-            expect(client).to receive(:search).with(query_params).and_return(response)
+            client.stub(:search).and_return(response)
             response = index.search(query)
             response.should be_kind_of Hashie::Mash
           end

@@ -32,7 +32,9 @@ module Elasticsearch
         end
 
         def search(query)
-          response = client.search(query.as_hash)
+          defaults    = { index: Documents.index_name }
+          search_hash = defaults.merge(query.as_hash)
+          response    = client.search(search_hash)
           Hashie::Mash.new(response)
         end
 

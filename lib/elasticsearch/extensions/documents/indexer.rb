@@ -28,6 +28,22 @@ module Elasticsearch
           end
         end
 
+        def index(payload)
+          client.index payload
+        end
+
+        def delete(payload)
+          client.delete payload
+        end
+
+        def search(payload)
+          client.search payload
+        end
+
+        def refresh
+          client.indices.refresh index: Documents.index_name
+        end
+
         def reindex(options = {}, &block)
           force_create = options.fetch(:force_create) { false }
 

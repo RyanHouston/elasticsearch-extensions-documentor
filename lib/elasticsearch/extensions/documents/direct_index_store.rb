@@ -1,7 +1,7 @@
 module Elasticsearch
   module Extensions
     module Documents
-      class Indexer
+      class DirectIndexStore
         attr_reader :client, :storage
 
         def initialize(options = {})

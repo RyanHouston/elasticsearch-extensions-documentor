@@ -11,10 +11,10 @@ module Elasticsearch
       end
 
       describe Index do
-        let(:indexer) { double(:indexer) }
+        let(:adapter) { double(:adapter) }
         let(:model) { double(:model, id: 1) }
         let(:document) { TestDocument.new(model) }
-        subject(:index) { Index.new(indexer) }
+        subject(:index) { Index.new(adapter) }
 
         describe '#index' do
           it 'adds or replaces a document in the search index' do
@@ -24,7 +24,7 @@ module Elasticsearch
               id: 1,
               body: {valueA: :a, valueB: :b}
             }
-            expect(indexer).to receive(:index).with(payload)
+            expect(adapter).to receive(:index).with(payload)
             index.index document
           end
         end
@@ -36,7 +36,7 @@ module Elasticsearch
               type: 'test_doc',
               id: 1,
             }
-            expect(indexer).to receive(:delete).with(payload)
+            expect(adapter).to receive(:delete).with(payload)
             index.delete document
           end
         end
@@ -72,26 +72,26 @@ module Elasticsearch
 
           it 'assigns a default value to the "index" field' do
             expected_params = query_params.merge(index: 'test_index')
-            expect(indexer).to receive(:search).with(expected_params)
+            expect(adapter).to receive(:search).with(expected_params)
             index.search query
           end
 
-          it 'passes on the query request body to the indexer' do
+          it 'passes on the query request body to the adapter' do
             expected_params = query_params.merge(index: 'test_index')
-            expect(indexer).to receive(:search).with(expected_params)
+            expect(adapter).to receive(:search).with(expected_params)
             index.search query
           end
 
           it 'returns a Hashie::Mash instance' do
-            indexer.stub(:search).and_return(response)
+            adapter.stub(:search).and_return(response)
             response = index.search(query)
             response.should be_kind_of Hashie::Mash
           end
         end
 
         describe '#refresh' do
-          it 'delegates to the indexer' do
-            expect(indexer).to receive(:refresh)
+          it 'delegates to the adapter' do
+            expect(adapter).to receive(:refresh)
             index.refresh
           end
         end

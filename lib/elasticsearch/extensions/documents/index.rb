@@ -4,10 +4,10 @@ module Elasticsearch
   module Extensions
     module Documents
       class Index
-        attr_reader :indexer
+        attr_reader :adapter
 
-        def initialize(indexer = nil)
-          @indexer = indexer || Indexer.new
+        def initialize(adapter = nil)
+          @adapter = adapter || DirectIndexStore.new
         end
 
         def index(document)
@@ -17,7 +17,7 @@ module Elasticsearch
             id:     document.id,
             body:   document.as_hash,
           }
-          indexer.index payload
+          adapter.index payload
         end
 
         def delete(document)
@@ -26,7 +26,7 @@ module Elasticsearch
             type:   document.class.type,
             id:     document.id,
           }
-          indexer.delete payload
+          adapter.delete payload
         rescue Elasticsearch::Transport::Transport::Errors::NotFound => not_found
           Documents.logger.info "[Documents] Attempted to delete missing document: #{not_found}"
         end
@@ -34,12 +34,12 @@ module Elasticsearch
         def search(query)
           defaults    = { index: Documents.index_name }
           search_hash = defaults.merge(query.as_hash)
-          response    = indexer.search(search_hash)
+          response    = adapter.search(search_hash)
           Hashie::Mash.new(response)
         end
 
         def refresh
-          indexer.refresh
+          adapter.refresh
         end
 
       end

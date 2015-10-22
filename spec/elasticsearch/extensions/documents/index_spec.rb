@@ -19,7 +19,6 @@ module Elasticsearch
         describe '#index' do
           it 'adds or replaces a document in the search index' do
             payload = {
-              index: 'test_index',
               type: 'test_doc',
               id: 1,
               body: {valueA: :a, valueB: :b}
@@ -32,7 +31,6 @@ module Elasticsearch
         describe '#delete' do
           it 'removes a document from the search index' do
             payload = {
-              index: 'test_index',
               type: 'test_doc',
               id: 1,
             }
@@ -57,7 +55,7 @@ module Elasticsearch
                 "total" => 4000,
                 "max_score" => 4.222,
                 "hits" => [
-                  {"_index" => "test_index",
+                  {
                     "_type"  => "user",
                     "_id"    => 42,
                     "_score" => 4.222,
@@ -70,15 +68,8 @@ module Elasticsearch
 
           let(:query) { double(:query, as_hash: query_params) }
 
-          it 'assigns a default value to the "index" field' do
-            expected_params = query_params.merge(index: 'test_index')
-            expect(adapter).to receive(:search).with(expected_params)
-            index.search query
-          end
-
           it 'passes on the query request body to the adapter' do
-            expected_params = query_params.merge(index: 'test_index')
-            expect(adapter).to receive(:search).with(expected_params)
+            expect(adapter).to receive(:search).with(query_params)
             index.search query
           end
 

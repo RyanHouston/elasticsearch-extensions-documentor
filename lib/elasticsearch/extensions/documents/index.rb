@@ -7,12 +7,11 @@ module Elasticsearch
         attr_reader :adapter
 
         def initialize(adapter = nil)
-          @adapter = adapter || DirectIndexStore.new
+          @adapter = adapter || Documents.index_adapter
         end
 
         def index(document)
           payload = {
-            index:  Documents.index_name,
             type:   document.class.type,
             id:     document.id,
             body:   document.as_hash,
@@ -22,7 +21,6 @@ module Elasticsearch
 
         def delete(document)
           payload = {
-            index:  Documents.index_name,
             type:   document.class.type,
             id:     document.id,
           }
@@ -32,9 +30,7 @@ module Elasticsearch
         end
 
         def search(query)
-          defaults    = { index: Documents.index_name }
-          search_hash = defaults.merge(query.as_hash)
-          response    = adapter.search(search_hash)
+          response = adapter.search(query.as_hash)
           Hashie::Mash.new(response)
         end
 

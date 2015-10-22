@@ -10,16 +10,16 @@ module Elasticsearch
           @config = options.fetch(:config) { Documents.configuration }
         end
 
-        def drop_index
-          client.indices.delete(index: config.index_name) if index_exists?
+        def drop_index(index_name)
+          client.indices.delete(index: index_name) if index_exists?(index_name)
         end
 
-        def index_exists?
-          client.indices.exists(index: config.index_name)
+        def index_exists?(index_name)
+          client.indices.exists(index: index_name)
         end
 
-        def create_index
-          client.indices.create(index: config.index_name, body: index_definition) unless index_exists?
+        def create_index(index_name)
+          client.indices.create(index: index_name, body: index_definition) unless index_exists?(index_name)
         end
 
         def index_definition

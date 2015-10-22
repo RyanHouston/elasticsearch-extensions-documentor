@@ -38,6 +38,10 @@ module Elasticsearch
           adapter.refresh
         end
 
+        def reindex(options = {}, &block)
+          adapter.reindex(options, &block)
+        end
+
       end
     end
   end

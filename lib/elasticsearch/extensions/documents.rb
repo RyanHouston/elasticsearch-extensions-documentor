@@ -7,6 +7,7 @@ require "elasticsearch/extensions/documents/index"
 require "elasticsearch/extensions/documents/indexer"
 require "elasticsearch/extensions/documents/bulk_indexer"
 require "elasticsearch/extensions/documents/queryable"
+require "elasticsearch/extensions/documents/storage"
 require "elasticsearch/extensions/documents/utils"
 
 module Elasticsearch

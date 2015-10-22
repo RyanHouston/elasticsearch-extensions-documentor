@@ -42,6 +42,15 @@ module Elasticsearch
           storage.drop_index current_index_name
         end
 
+        def setup
+          timestamp      = Time.now.strftime('%Y%m%d-%H%M%S')
+          new_index_name = Documents.index_name + "_#{timestamp}"
+
+          storage.create_index new_index_name
+          client.indices.put_alias index: new_index_name, name: read_alias
+          client.indices.put_alias index: new_index_name, name: write_alias
+        end
+
         def swap_index_alias(options)
           change_alias = options.fetch(:alias)
           new_index = options.fetch(:new)

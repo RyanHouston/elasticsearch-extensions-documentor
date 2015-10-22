@@ -34,6 +34,10 @@ module Elasticsearch
           block.call(self) if block_given?
         end
 
+        def setup
+          storage.create_index(Documents.index_name)
+        end
+
       end
     end
   end

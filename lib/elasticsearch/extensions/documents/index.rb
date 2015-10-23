@@ -42,6 +42,10 @@ module Elasticsearch
           adapter.reindex(options, &block)
         end
 
+        def bulk_index(documents)
+          adapter.bulk_index(documents)
+        end
+
       end
     end
   end

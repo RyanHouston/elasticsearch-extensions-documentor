@@ -42,7 +42,7 @@ module Elasticsearch
         describe "#reindex" do
           let(:indices) { double(:indices) }
           before(:each) do
-            allow(indices).to receive(:get_alias)
+            allow(store).to receive(:index_for_alias)
             allow(indices).to receive(:update_aliases)
             allow(storage).to receive(:create_index)
             allow(storage).to receive(:drop_index)
@@ -63,7 +63,7 @@ module Elasticsearch
               new:   "test_index_timestamp",
             }
 
-            allow(indices).to receive(:get_alias).and_return("test_index_old")
+            allow(store).to receive(:index_for_alias).and_return("test_index_old")
             expect(store).to receive(:swap_index_alias).with(swap_args)
             expect(store).to receive(:swap_index_alias)
 
@@ -77,7 +77,7 @@ module Elasticsearch
               new:   "test_index_timestamp",
             }
 
-            allow(indices).to receive(:get_alias).and_return("test_index_old")
+            allow(store).to receive(:index_for_alias).and_return("test_index_old")
             expect(store).to receive(:swap_index_alias).with(swap_args)
             expect(store).to receive(:swap_index_alias)
 
@@ -88,6 +88,36 @@ module Elasticsearch
             documents = double(:documents)
             expect(store).to receive(:bulk_index).with(documents)
             store.reindex { |store| store.bulk_index(documents) }
+          end
+        end
+
+        describe "#bulk_index" do
+          let(:models) { [double(:model, id: 1, a: 1, b: 2), double(:model, id: 2, a: 3, b: 4)] }
+          let(:documents) { models.map { |m| TestDocumentsDocument.new(m) } }
+
+          it 'passes operations to the client bulk action' do
+            expected_body = {
+              body: [
+                {
+                  index: {
+                    _index: 'test_index_write',
+                    _type:  'documents_test',
+                    _id:    1,
+                    data:   { a: 1, b: 2 },
+                  }
+                },
+                {
+                  index: {
+                    _index: 'test_index_write',
+                    _type:  'documents_test',
+                    _id:    2,
+                    data:   { a: 3, b: 4 },
+                  },
+                }
+              ]
+            }
+            expect(client).to receive(:bulk).with(expected_body)
+            store.bulk_index(documents)
           end
         end
 

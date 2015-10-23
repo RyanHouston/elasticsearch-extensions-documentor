@@ -31,7 +31,7 @@ module Elasticsearch
         def reindex(options = {}, &block)
           timestamp      = Time.now.strftime('%Y%m%d-%H%M%S')
           new_index_name = Documents.index_name + "_#{timestamp}"
-          current_index_name = client.indices.get_alias(name: write_alias).keys.first
+          current_index_name = index_for_alias write_alias
 
           storage.create_index new_index_name
           swap_index_alias(alias: write_alias, old: current_index_name, new: new_index_name)
@@ -40,6 +40,10 @@ module Elasticsearch
 
           swap_index_alias(alias: read_alias, old: current_index_name, new: new_index_name)
           storage.drop_index current_index_name
+        end
+
+        def index_for_alias(alias_name)
+          client.indices.get_alias(name: alias_name).keys.first
         end
 
         def setup
@@ -64,6 +68,24 @@ module Elasticsearch
           }
         end
 
+        def bulk_index(documents)
+          client.bulk body: bulk_index_operations(documents)
+        end
+
+        def bulk_index_operations(documents)
+          documents.collect { |document| bulk_index_operation_hash(document) }
+        end
+
+        def bulk_index_operation_hash(document)
+          {
+            index: {
+              _index: write_alias,
+              _type:  document.class.type,
+              _id:    document.id,
+              data:   document.as_hash,
+            }
+          }
+        end
       end
     end
   end

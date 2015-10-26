@@ -128,6 +128,7 @@ module Elasticsearch
             allow(store).to receive(:indices_for_alias).and_return(["test_index_1234"])
             allow(indices).to receive(:put_alias)
             allow(indices).to receive(:delete_alias)
+            allow(indices).to receive(:exists_alias).and_return(true)
             allow(storage).to receive(:create_index)
           end
 

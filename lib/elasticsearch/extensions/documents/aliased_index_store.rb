@@ -71,11 +71,16 @@ module Elasticsearch
         end
 
         def reset_aliases
-          indices_for_alias(write_alias).each do |index|
-            client.indices.delete_alias index: index, name: write_alias
+          if client.indices.exists_alias(name: write_alias)
+            indices_for_alias(write_alias).each do |index|
+              client.indices.delete_alias index: index, name: write_alias
+            end
           end
-          indices_for_alias(read_alias).each do |index|
-            client.indices.delete_alias index: index, name: read_alias
+
+          if client.indices.exists_alias(name: read_alias)
+            indices_for_alias(read_alias).each do |index|
+              client.indices.delete_alias index: index, name: read_alias
+            end
           end
         end
 

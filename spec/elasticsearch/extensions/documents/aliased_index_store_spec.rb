@@ -42,7 +42,7 @@ module Elasticsearch
         describe "#reindex" do
           let(:indices) { double(:indices) }
           before(:each) do
-            allow(store).to receive(:index_for_alias)
+            allow(store).to receive(:indices_for_alias).and_return(["test_index_old"])
             allow(indices).to receive(:update_aliases)
             allow(storage).to receive(:create_index)
             allow(storage).to receive(:drop_index)
@@ -63,7 +63,6 @@ module Elasticsearch
               new:   "test_index_timestamp",
             }
 
-            allow(store).to receive(:index_for_alias).and_return("test_index_old")
             expect(store).to receive(:swap_index_alias).with(swap_args)
             expect(store).to receive(:swap_index_alias)
 
@@ -77,7 +76,6 @@ module Elasticsearch
               new:   "test_index_timestamp",
             }
 
-            allow(store).to receive(:index_for_alias).and_return("test_index_old")
             expect(store).to receive(:swap_index_alias).with(swap_args)
             expect(store).to receive(:swap_index_alias)
 
@@ -118,6 +116,37 @@ module Elasticsearch
             }
             expect(client).to receive(:bulk).with(expected_body)
             store.bulk_index(documents)
+          end
+        end
+
+        describe "#setup" do
+          let(:indices) { double(:indices) }
+          before(:each) do
+            time = double(:time, now: self, strftime: "1234")
+            allow(Time).to receive(:now).and_return(time)
+            allow(client).to receive(:indices).and_return(indices)
+            allow(store).to receive(:indices_for_alias).and_return(["test_index_1234"])
+            allow(indices).to receive(:put_alias)
+            allow(indices).to receive(:delete_alias)
+            allow(storage).to receive(:create_index)
+          end
+
+          it "resets the aliases to start clean" do
+            expect(indices).to receive(:delete_alias).with(index: "test_index_1234", name: "test_index_write")
+            expect(indices).to receive(:delete_alias).with(index: "test_index_1234", name: "test_index_read")
+            store.setup
+          end
+
+          it "creates a new timestamped index" do
+            timestamped_index = "test_index_1234"
+            expect(storage).to receive(:create_index).with(timestamped_index)
+            store.setup
+          end
+
+          it "sets the read and write aliases to the new index" do
+            expect(indices).to receive(:put_alias).with(index: "test_index_1234", name: "test_index_write")
+            expect(indices).to receive(:put_alias).with(index: "test_index_1234", name: "test_index_read")
+            store.setup
           end
         end
 

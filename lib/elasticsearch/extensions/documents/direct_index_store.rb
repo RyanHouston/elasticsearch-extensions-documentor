@@ -35,6 +35,7 @@ module Elasticsearch
         end
 
         def setup
+          storage.drop_index(Documents.index_name)
           storage.create_index(Documents.index_name)
         end
 
